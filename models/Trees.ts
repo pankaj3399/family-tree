@@ -11,6 +11,8 @@ export interface ITree extends Document {
   template: string;
 }
 
+
+
 const TreeSchema = new Schema({
   userId: { type: String, required: true, index: true },
   name: { type: String, required: true },

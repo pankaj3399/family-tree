@@ -1,12 +1,21 @@
 import { Navbar } from "@/components/layout/navbar";
 import { ThemeProvider } from "@/components/layout/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
-import { ClerkProvider } from "@clerk/nextjs";
+
 import type { Metadata } from "next";
+import {
+  ClerkProvider,
+  ClerkLoaded,
+  ClerkLoading,
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton
+} from '@clerk/nextjs'
 import { Inter } from "next/font/google";
 import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "FamilyTreeCreator",
@@ -19,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider >
       <html lang="pt-br" suppressHydrationWarning>
         <body className={cn("min-h-screen bg-background", inter.className)}>
           <ThemeProvider
@@ -30,11 +39,37 @@ export default function RootLayout({
           >
             <TooltipProvider>
               <Navbar />
+{/*               
+          <SignedOut>
+            <SignInButton />
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn> */}
+
               {children}
             </TooltipProvider>
           </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>
+    // <ClerkProvider>
+    //   <html lang="en">
+    //     <body>
+          
+    //       <SignedOut>
+    //         <SignInButton />
+    //       </SignedOut>
+    //       <SignedIn>
+    //         <UserButton />
+    //       </SignedIn>
+    //       <ClerkLoading>Loading ..</ClerkLoading>
+    //       <ClerkLoaded>
+    //       {/* <Navbar /> */}
+    //       {children}
+    //       </ClerkLoaded>
+    //     </body>
+    //   </html>
+    // </ClerkProvider>
   );
 }
