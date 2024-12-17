@@ -54,3 +54,15 @@ npm install
 ```bash
 npm run dev
 ```
+
+.env for file
+
+```
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
+MONGODB_URI=
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+SIGNING_SECRET=
+```
+

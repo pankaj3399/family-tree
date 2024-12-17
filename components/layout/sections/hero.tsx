@@ -2,6 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@clerk/nextjs";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
@@ -26,6 +27,9 @@ const carouselImages = [
 ];
 
 export const HeroSection = () => {
+  const {userId} = useAuth()
+  console.log(userId);
+  
   const { theme } = useTheme();
   const [currentIndex, setCurrentIndex] = useState(1);
   const [isAnimating, setIsAnimating] = useState(false);

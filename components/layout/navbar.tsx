@@ -1,6 +1,6 @@
 "use client";
 import { useToast } from "@/hooks/use-toast";
-import { treeService } from "@/services/treeService";
+import { createTree } from "@/services/treeService";
 import { SignInButton, SignOutButton, useAuth ,SignedOut,UserButton,SignedIn} from "@clerk/nextjs";
 import {
   CirclePlus,
@@ -172,6 +172,7 @@ export  function Navbar  ()  {
   const router = useRouter();
 
   const handleTreeCreate = async () => {
+    
     if (!treeName.trim()) {
       toast({
         title: "Error",
@@ -183,7 +184,9 @@ export  function Navbar  ()  {
 
     try {
       setTreeCreating(true);
-      const newTree = await treeService.createTree(treeName);
+
+      const newTree = await createTree(treeName);
+
       toast({
         title: "Success",
         description: "Tree created successfully",
@@ -193,6 +196,8 @@ export  function Navbar  ()  {
 
       router.push(`/family-tree/${newTree._id}/edit`);
     } catch (error) {
+      console.log(error);
+      
       toast({
         title: "Error",
         description: "Failed to create tree",
@@ -306,6 +311,7 @@ export  function Navbar  ()  {
                 </DialogHeader>
                 <form
                   onSubmit={(e) => {
+                    
                     e.preventDefault();
                     handleTreeCreate();
                   }}

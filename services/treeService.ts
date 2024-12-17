@@ -1,6 +1,7 @@
 // services/treeService.ts
-
+"use server"
 import { useAuth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 
 export interface FamilyTree {
@@ -12,45 +13,59 @@ export interface FamilyTree {
   template: string;
 }
 
-const { userId } = useAuth();
-const USER_ID = userId ?? "";
+// const  {userId}  = useAuth();
+// console.log(userId);
 
-export const treeService = {
-  async fetchTrees(): Promise<FamilyTree[]> {
-    const response = await fetch("/api/trees", {
-      headers: { "user-id": USER_ID },
+
+  const BASE_URL = "http://localhost:3001";
+
+
+
+  export   async function fetchTrees(): Promise<FamilyTree[]> {
+    const {userId} = await auth()
+    console.log("SERVER: "+userId);
+    const response = await fetch(`${BASE_URL}/api/trees`, {
+      headers: { "user-id": userId || "" },
     });
     if (!response.ok) throw new Error("Failed to fetch trees");
     return response.json();
-  },
+  }
 
-  async deleteTree(id: string): Promise<void> {
-    const response = await fetch(`/api/trees/${id}`, {
+  export   async function deleteTree(id: string): Promise<void> {
+    const {userId} = await auth()
+    console.log("SERVER: "+userId);
+    const response = await fetch(`${BASE_URL}/api/trees/${id}`, {
       method: "DELETE",
-      headers: { "user-id": USER_ID },
+      headers: { "user-id": userId || "" },
     });
     if (!response.ok) throw new Error("Failed to delete tree");
-  },
+  }
 
-  async createTree(name?: string): Promise<FamilyTree> {
-    const response = await fetch("/api/trees", {
+  export   async function createTree(name?: string): Promise<FamilyTree> {
+    console.log("Tree");
+    
+    const {userId} = await auth()
+    // console.log("SERVER: "+sessionId);
+    const response = await fetch(`${BASE_URL}/api/trees`, {
       method: "POST",
-      headers: { "user-id": USER_ID, "Content-Type": "application/json" },
+      headers: { "user-id":userId || "" , "Content-Type": "application/json" },
       body: JSON.stringify({ name }),
     });
     if (!response.ok) throw new Error("Failed to create tree");
     return response.json();
-  },
+  }
 
-  async exportTree(id: string): Promise<FamilyTree> {
-    const response = await fetch(`/api/trees/${id}`, {
-      headers: { "user-id": USER_ID },
+  export   async function exportTree(id: string): Promise<FamilyTree> {
+    const {userId} = await auth()
+    console.log("SERVER: "+userId);
+    const response = await fetch(`${BASE_URL}/api/trees/${id}`, {
+      headers: { "user-id": userId || "" },
     });
     if (!response.ok) throw new Error("Failed to export tree");
     return response.json();
-  },
+  }
 
-  generateExportFile(tree: FamilyTree): void {
+  export async   function generateExportFile(tree: FamilyTree): Promise<void> {
     const blob = new Blob([JSON.stringify(tree, null, 2)], {
       type: "application/json",
     });
@@ -62,5 +77,4 @@ export const treeService = {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  },
 };
