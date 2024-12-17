@@ -1,13 +1,14 @@
 import { db } from "@/lib/mongodb";
 import Tree from "@/models/Trees";
 import { NextRequest } from "next/server";
+import { auth } from "@clerk/nextjs/server";
 
 export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const userId = req.headers.get("user-id");
+    const { userId } = await auth();
     if (!userId) return new Response("Unauthorized", { status: 401 });
 
     await db.connect();
@@ -32,7 +33,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const userId = req.headers.get("user-id");
+    const { userId } = await auth();
     if (!userId) return new Response("Unauthorized", { status: 401 });
 
     await db.connect();
@@ -51,7 +52,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const userId = req.headers.get("user-id");
+    const { userId } = await auth();
     if (!userId) return new Response("Unauthorized", { status: 401 });
 
     await db.connect();

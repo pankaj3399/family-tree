@@ -1,10 +1,11 @@
 import { db } from "@/lib/mongodb";
 import Tree from "@/models/Trees";
 import { NextRequest } from "next/server";
+import { auth } from "@clerk/nextjs/server";
 
 export async function GET(req: NextRequest) {
   try {
-    const userId = req.headers.get("user-id");
+    const { userId } = await auth();
     if (!userId) return new Response("Unauthorized", { status: 401 });
 
     await db.connect();
@@ -18,7 +19,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const userId = req.headers.get("user-id");
+    const { userId } = await auth();
     if (!userId) return new Response("Unauthorized", { status: 401 });
 
     const { name = "New Family Tree" } = await req.json();

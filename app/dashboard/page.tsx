@@ -36,7 +36,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { treeService, FamilyTree } from "@/services/treeService";
+import { useTreeService, FamilyTree } from "@/services/treeService";
 import { Input } from "@/components/ui/input";
 
 interface UserPlan {
@@ -88,7 +88,7 @@ const Dashboard = () => {
 
   const fetchTrees = async () => {
     try {
-      const data = await treeService.fetchTrees();
+      const data = await useTreeService.fetchTrees();
       setFamilyTrees(data);
     } catch (error) {
       toast({
@@ -107,7 +107,7 @@ const Dashboard = () => {
     setShowDeleteDialog(false);
 
     await optimisticUpdate(
-      async () => await treeService.deleteTree(id),
+      async () => await useTreeService.deleteTree(id),
       () => setFamilyTrees(prevTrees),
       "Tree deleted successfully"
     );
@@ -148,7 +148,7 @@ const Dashboard = () => {
 
     await optimisticUpdate(
       async () => {
-        const newTree = await treeService.createTree(treeName);
+        const newTree = await useTreeService.createTree(treeName);
         setFamilyTrees((prev) =>
           prev.map((tree) => (tree._id === tempId ? newTree : tree))
         );
@@ -167,8 +167,8 @@ const Dashboard = () => {
       const tree = familyTrees.find((t) => t._id === id);
       if (!tree) throw new Error();
 
-      const treeData = await treeService.exportTree(id);
-      treeService.generateExportFile(treeData);
+      const treeData = await useTreeService.exportTree(id);
+      useTreeService.generateExportFile(treeData);
 
       toast({
         title: "Success",

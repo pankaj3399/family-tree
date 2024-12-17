@@ -1,6 +1,6 @@
 "use client";
 import { useToast } from "@/hooks/use-toast";
-import { treeService } from "@/services/treeService";
+import { useTreeService } from "@/services/treeService";
 import { SignInButton, SignOutButton, useAuth } from "@clerk/nextjs";
 import {
   CirclePlus,
@@ -175,7 +175,7 @@ export const Navbar = () => {
 
     try {
       setTreeCreating(true);
-      const newTree = await treeService.createTree(treeName);
+      const newTree = await useTreeService.createTree(treeName);
       toast({
         title: "Success",
         description: "Tree created successfully",
