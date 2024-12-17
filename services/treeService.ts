@@ -1,5 +1,8 @@
 // services/treeService.ts
 
+import { useAuth } from "@clerk/nextjs";
+
+
 export interface FamilyTree {
   _id: string;
   name: string;
@@ -9,7 +12,8 @@ export interface FamilyTree {
   template: string;
 }
 
-const USER_ID = "user123"; // In a real app, this would come from auth context
+const { userId } = useAuth();
+const USER_ID = userId ?? "";
 
 export const treeService = {
   async fetchTrees(): Promise<FamilyTree[]> {
