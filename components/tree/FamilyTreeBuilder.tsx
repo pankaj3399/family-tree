@@ -294,63 +294,77 @@ let familyData = [
     }
   };
 
-  return (
-    <div className="h-screen flex flex-col">
-      {/* Settings Panel at the top */}
-      <div className="p-4  bg-background border-b">
-        <SettingsPanel 
-          settings={treeSettings}
-          onSettingsChange={(updatedSettings) => setTreeSettings(updatedSettings)}
-        />
+  return(
+    <div className="flex">
+      <div className=""></div>
+      <div>
+        <div></div>
+        <div></div>
       </div>
-
-      <div className="flex-1 flex overflow-hidden">
-        {/* Sidebar on the left */}
-        <aside className="w-1/4 p-4 bg-background border-r overflow-y-auto">
-          <MemberEditPanel 
-            member={selectedMember}
-            onUpdateMember={updateMemberInfo}
-            onDeleteMember={deleteMember}
-            onImageUpload={handleImageUpload}
-          />
-        </aside>
-
-        {/* Family Tree on the right */}
-        <div className="">
-        <main className="flex-1 p-4 relative  ">
-          <div ref={treeContainerRef} className="w-1/4  bg-red-800" />
-
-          {/* <Button
-            onClick={() => setAddMemberModalOpen(true)}
-            className="absolute bottom-4 right-4"
-          >
-            + Add
-          </Button>
-
-          <Button
-            onClick={saveTreeToBackend}
-            className="absolute top-4 right-4 mt-36"
-            variant="outline"
-          >
-            Save
-          </Button>
-
-          {autoSaveStatus && (
-            <div className="absolute top-4 left-4 bg-yellow-200 text-yellow-800 p-2 rounded shadow">
-              {autoSaveStatus}
-            </div>
-          )} */}
-        </main>
-      </div>
-      </div>
-
-      <AddMemberModal 
-        isOpen={addMemberModalOpen}
-        onClose={() => setAddMemberModalOpen(false)}
-        onAddMember={addFamilyMember}
-      />
     </div>
   )
+
 }
 
 export default FamilyTreeBuilder
+
+
+// return (
+    
+  {/*// <div className="h-screen flex flex-col">
+  //   {/* Settings Panel at the top */}
+  //   <div className="p-4  bg-background border-b">
+  //     <SettingsPanel 
+  //       settings={treeSettings}
+  //       onSettingsChange={(updatedSettings) => setTreeSettings(updatedSettings)}
+  //     />
+  //   </div>
+
+  //   <div className="flex-1 flex overflow-hidden">
+  //     {/* Sidebar on the left */}
+  //     <aside className="w-1/4 p-4 bg-background border-r overflow-y-auto">
+  //       <MemberEditPanel 
+  //         member={selectedMember}
+  //         onUpdateMember={updateMemberInfo}
+  //         onDeleteMember={deleteMember}
+  //         onImageUpload={handleImageUpload}
+  //       />
+  //     </aside>
+
+  //     {/* Family Tree on the right */}
+  //     <div className="">
+  //     <main className="flex-1 p-4 relative  ">
+  //       <div ref={treeContainerRef} className="w-1/4  bg-red-800" />
+
+  //       {/* <Button
+  //         onClick={() => setAddMemberModalOpen(true)}
+  //         className="absolute bottom-4 right-4"
+  //       >
+  //         + Add
+  //       </Button>
+
+  //       <Button
+  //         onClick={saveTreeToBackend}
+  //         className="absolute top-4 right-4 mt-36"
+  //         variant="outline"
+  //       >
+  //         Save
+  //       </Button>
+
+  //       {autoSaveStatus && (
+  //         <div className="absolute top-4 left-4 bg-yellow-200 text-yellow-800 p-2 rounded shadow">
+  //           {autoSaveStatus}
+  //         </div>
+  //       )} */}
+  //     </main>
+  //   </div>
+  //   </div>
+
+  //   <AddMemberModal 
+  //     isOpen={addMemberModalOpen}
+  //     onClose={() => setAddMemberModalOpen(false)}
+  //     onAddMember={addFamilyMember}
+  //   />
+  // </div> */}
+  
+// )
