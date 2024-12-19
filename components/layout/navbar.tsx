@@ -184,8 +184,21 @@ export  function Navbar  ()  {
 
     try {
       setTreeCreating(true);
+      const response = await fetch('/api/trees', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          name: treeName.trim()
+        })
+      });
 
-      const newTree = await createTree(treeName);
+      if (!response.ok) {
+        throw new Error('Failed to create tree');
+      }
+
+      const newTree = await response.json();
 
       toast({
         title: "Success",
@@ -194,9 +207,9 @@ export  function Navbar  ()  {
       setCreateTreeDialogOpen(false);
       setTreeName("");
 
-      router.push(`/family-tree/${newTree._id}/edit`);
+      router.push(`/dashboard`);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       
       toast({
         title: "Error",

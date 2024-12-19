@@ -89,7 +89,17 @@ const Dashboard = () => {
 
   const fetchTree = async () => {
     try {
-      const data = await fetchTrees();
+      const response = await fetch('/api/trees', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to create tree');
+      }
+      const data = await response.json();
+
       setFamilyTrees(data);
     } catch (error) {
       toast({
@@ -155,8 +165,7 @@ const Dashboard = () => {
         );
         setCreateTreeDialogOpen(false);
         setTreeName("");
-        // router.push(`/family-tree/${newTree._id}/edit`);
-      },
+        router.push(`/family-tree/${newTree._id}/edit`);      },
       () => setFamilyTrees(prevTrees),
       "Tree created successfully"
     );

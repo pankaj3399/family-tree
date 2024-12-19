@@ -46,7 +46,7 @@ export interface FamilyTree {
     
     const {userId} = await auth()
     // console.log("SERVER: "+sessionId);
-    const response = await fetch(`${BASE_URL}/api/trees`, {
+    const response = await fetch(`http://localhost:3001/api/trees`, {
       method: "POST",
       headers: { "user-id":userId || "" , "Content-Type": "application/json" },
       body: JSON.stringify({ name }),

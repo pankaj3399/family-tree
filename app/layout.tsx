@@ -1,3 +1,4 @@
+
 import { Navbar } from "@/components/layout/navbar";
 import { ThemeProvider } from "@/components/layout/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,6 +17,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 import { cn } from "@/lib/utils";
+import NavbarWrapper from "@/components/layout/Navbar1";
 
 export const metadata: Metadata = {
   title: "FamilyTreeCreator",
@@ -27,6 +29,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
   return (
     <ClerkProvider >
       <html lang="pt-br" suppressHydrationWarning>
@@ -38,7 +41,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <TooltipProvider>
-              <Navbar />
+            <NavbarWrapper/>
 {/*               
           <SignedOut>
             <SignInButton />
