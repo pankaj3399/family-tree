@@ -19,7 +19,7 @@ const page = ({params}:{
     if(!userId){
       return;
     }
-    fetch(`http://localhost:3001/api/trees/${id}`,{
+    fetch(`http://localhost:3000/api/trees/${id}`,{
       headers: {
         "user-id": userId || ""
       }
