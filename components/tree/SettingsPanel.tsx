@@ -34,9 +34,11 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, onSettin
     onSettingsChange(updated)
   }
 
+  // bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60
+
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex items-center justify-between gap-4 py-4 px-6">
+    <div className="flex flex-col items-end w-[73vw] justify-end  mt-8  ">
+      <div className="flex  h-32  container  items-center justify-between gap-4 py-4 px-6">
 
 
         {/* Settings Controls */}

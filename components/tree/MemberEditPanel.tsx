@@ -179,7 +179,7 @@ export const MemberEditPanel: React.FC<MemberEditPanelProps> = ({
   }
 
   return (
-    <Card className="relative  top-20 w-[calc(100%-2rem)] sm:w-96   overflow-y-auto">
+    <Card className="relative top-6 w-[calc(100%-2rem)] sm:w-80">
       <CardHeader>
         <CardTitle>Member Details</CardTitle>
       </CardHeader>
