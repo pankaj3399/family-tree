@@ -300,4 +300,3 @@ export const MemberEditPanel: React.FC<MemberEditPanelProps> = ({
     </Card>
   )
 }
-export default MemberEditPanel
