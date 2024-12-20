@@ -6,7 +6,7 @@ import FamilyTreeBuilder from "@/components/tree/FamilyTreeBuilder"
 import FamilyTree from "@/lib/familytree";
 import { useAuth } from "@clerk/nextjs";
 
-const page = ({params}:{
+const EditPage = ({params}:{
   params: any
 }) => {
   const {id} = params;
@@ -63,4 +63,4 @@ const page = ({params}:{
   );
 };
 
-export default page;
+export default EditPage;
