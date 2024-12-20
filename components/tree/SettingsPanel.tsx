@@ -39,12 +39,12 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, onSettin
   // bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60
 
   return (
-    <div className="flex flex-col items-end w-[73vw] justify-end  mt-8  ">
-      <div className="flex  h-32  container  items-center justify-between gap-4 py-4 px-6">
+    <div className="flex flex-col items-end w-[73vw] justify-end  mt-0.5  ">
+      <div className="flex  h-28  container  items-center justify-between gap-1 py-4 px-6">
 
 
         {/* Settings Controls */}
-        <div className="flex flex-wrap items-center justify-between gap-4 w-full">
+        <div className="flex flex-wrap items-center justify-between gap-1 w-full">
           
           {/* Zoom In/Out Buttons */}
           <div className="flex items-center space-x-4">

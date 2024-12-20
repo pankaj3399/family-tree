@@ -180,112 +180,111 @@ export const MemberEditPanel: React.FC<MemberEditPanelProps> = ({
   }
 
   return (
-    <Card className="relative top-6 w-[calc(100%-2rem)] sm:w-80">
-      <CardHeader>
-        <CardTitle>Member Details</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex flex-col items-center space-y-2">
-          <Avatar className="w-24 h-24">
-            <AvatarImage src={member.img} alt={`${member.firstName} ${member.lastName}`} />
-            <AvatarFallback>{member.firstName[0]}{member.lastName[0]}</AvatarFallback>
-          </Avatar>
-          <Label htmlFor="image-upload" className="cursor-pointer">
-            <Input id="image-upload" type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
-            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-              <UploadIcon size={16} />
-              <span>Upload Image</span>
-            </div>
-          </Label>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="firstName">First Name</Label>
+    <Card className="relative top-4 w-[calc(100%-2rem)] sm:w-80">
+    <CardHeader />
+    <CardContent className="space-y-2">
+      <div className="flex flex-col items-center space-y-1">
+        <Avatar className="w-20 h-20">
+          <AvatarImage src={member.img} alt={`${member.firstName} ${member.lastName}`} />
+          <AvatarFallback>{member.firstName[0]}{member.lastName[0]}</AvatarFallback>
+        </Avatar>
+        <Label htmlFor="image-upload" className="cursor-pointer">
+          <Input id="image-upload" type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+          <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+            <UploadIcon size={14} />
+            <span>Upload</span>
+          </div>
+        </Label>
+      </div>
+  
+      <div className="space-y-1">
+        <Label htmlFor="firstName">First Name</Label>
+        <Input
+          id="firstName"
+          value={member.firstName}
+          onChange={(e) => onUpdateMember({ ...member, firstName: e.target.value })}
+        />
+      </div>
+  
+      <div className="space-y-1">
+        <Label htmlFor="lastName">Last Name</Label>
+        <Input
+          id="lastName"
+          value={member.lastName}
+          onChange={(e) => onUpdateMember({ ...member, lastName: e.target.value })}
+        />
+      </div>
+  
+      <div className="space-y-1">
+        <Label htmlFor="gender">Gender</Label>
+        <Select
+          value={member.gender}
+          onValueChange={(value) => onUpdateMember({ ...member, gender: value as 'male' | 'female' })}
+        >
+          <SelectTrigger id="gender">
+            <SelectValue placeholder="Select gender" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="male">Male</SelectItem>
+            <SelectItem value="female">Female</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+  
+      <div className="flex items-center space-x-1">
+        <Switch
+          id="alive"
+          checked={member.alive}
+          onCheckedChange={(checked) => onUpdateMember({ 
+            ...member, 
+            alive: checked,
+            deathDate: checked ? undefined : member.deathDate
+          })}
+        />
+        <Label htmlFor="alive">Alive</Label>
+      </div>
+  
+      <div className="space-y-1">
+        <Label htmlFor="birthDate">Birth Date</Label>
+        <div className="relative">
+          <CalendarIcon className="absolute left-2 top-2 h-3.5 w-3.5 text-muted-foreground" />
           <Input
-            id="firstName"
-            value={member.firstName}
-            onChange={(e) => onUpdateMember({ ...member, firstName: e.target.value })}
+            id="birthDate"
+            type="date"
+            value={member.birthDate}
+            onChange={(e) => onUpdateMember({ ...member, birthDate: e.target.value })}
+            className="pl-7"
           />
         </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="lastName">Last Name</Label>
-          <Input
-            id="lastName"
-            value={member.lastName}
-            onChange={(e) => onUpdateMember({ ...member, lastName: e.target.value })}
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="gender">Gender</Label>
-          <Select
-            value={member.gender}
-            onValueChange={(value) => onUpdateMember({ ...member, gender: value as 'male' | 'female' })}
-          >
-            <SelectTrigger id="gender">
-              <SelectValue placeholder="Select gender" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="male">Male</SelectItem>
-              <SelectItem value="female">Female</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <Switch
-            id="alive"
-            checked={member.alive}
-            onCheckedChange={(checked) => onUpdateMember({ 
-              ...member, 
-              alive: checked,
-              deathDate: checked ? undefined : member.deathDate
-            })}
-          />
-          <Label htmlFor="alive">Alive</Label>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="birthDate">Birth Date</Label>
+      </div>
+  
+      {!member.alive && (
+        <div className="space-y-1">
+          <Label htmlFor="deathDate">Death Date</Label>
           <div className="relative">
-            <CalendarIcon className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+            <CalendarIcon className="absolute left-2 top-2 h-3.5 w-3.5 text-muted-foreground" />
             <Input
-              id="birthDate"
+              id="deathDate"
               type="date"
-              value={member.birthDate}
-              onChange={(e) => onUpdateMember({ ...member, birthDate: e.target.value })}
-              className="pl-8"
+              value={member.deathDate || ''}
+              onChange={(e) => onUpdateMember({ ...member, deathDate: e.target.value })}
+              className="pl-7"
             />
           </div>
         </div>
-
-        {!member.alive && (
-          <div className="space-y-2">
-            <Label htmlFor="deathDate">Death Date</Label>
-            <div className="relative">
-              <CalendarIcon className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="deathDate"
-                type="date"
-                value={member.deathDate || ''}
-                onChange={(e) => onUpdateMember({ ...member, deathDate: e.target.value })}
-                className="pl-8"
-              />
-            </div>
-          </div>
-        )}
-
-        <Button
-          variant="destructive"
-          className="w-full"
-          onClick={() => onDeleteMember(member.id)}
-        >
-          <Trash2Icon className="mr-2 h-4 w-4" />
-          Delete Member
-        </Button>
-      </CardContent>
-    </Card>
+      )}
+  
+      <Button
+        variant="destructive"
+        className="w-full text-sm py-2"
+        onClick={() => onDeleteMember(member.id)}
+      >
+        <Trash2Icon className="mr-1.5 h-3.5 w-3.5" />
+        Delete
+      </Button>
+    </CardContent>
+  </Card>
+  
   )
 }
 
