@@ -379,7 +379,7 @@ let familyData = [
       <div className="">
         <div className=" h-full">
         <main className="flex-1 p-4 relative  ">
-        <div ref={treeContainerRef} className="w-full max-h-[60vh]  bg-red-800" />
+        <div ref={treeContainerRef} className="w-full max-h-[60vh]  " />
                 {autoSaveStatus && (
                   <div className="absolute top-4 left-4 bg-yellow-200 text-yellow-800 p-2 rounded shadow">
                     {autoSaveStatus}
