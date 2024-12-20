@@ -99,7 +99,7 @@ const AddSonModal = ({members, selectedMember, onAddMember, onClose}:{
             {
               parents.map(parent => {
                 return (
-                  <Button className={cn(
+                  <Button key={parent.id} className={cn(
                     "h-auto py-4 text-white",
                     parent.gender === 'male' ? 'bg-blue-500 hover:bg-blue-600' : 'bg-pink-500 hover:bg-pink-600'
                   )} onClick={()=>{
@@ -154,7 +154,7 @@ const AddDaughterModal = ({members, selectedMember, onAddMember, onClose}:{
             {
               parents.map(parent => {
                 return (
-                  <Button className={cn(
+                  <Button key={parent.id} className={cn(
                     "h-auto py-4 text-white",
                     parent.gender === 'male' ? 'bg-blue-500 hover:bg-blue-600' : 'bg-pink-500 hover:bg-pink-600'
                   )} onClick={()=>{
