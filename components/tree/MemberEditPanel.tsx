@@ -179,112 +179,127 @@ export const MemberEditPanel: React.FC<MemberEditPanelProps> = ({
     }
   }
 
-  return (
-    <Card className="relative top-4 w-[calc(100%-2rem)] sm:w-80">
-    <CardHeader />
-    <CardContent className="space-y-2">
-      <div className="flex flex-col items-center space-y-1">
-        <Avatar className="w-20 h-20">
-          <AvatarImage src={member.img} alt={`${member.firstName} ${member.lastName}`} />
-          <AvatarFallback>{member.firstName[0]}{member.lastName[0]}</AvatarFallback>
-        </Avatar>
-        <Label htmlFor="image-upload" className="cursor-pointer">
-          <Input id="image-upload" type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
-          <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-            <UploadIcon size={14} />
-            <span>Upload</span>
-          </div>
-        </Label>
-      </div>
-  
-      <div className="space-y-1">
-        <Label htmlFor="firstName">First Name</Label>
-        <Input
-          id="firstName"
-          value={member.firstName}
-          onChange={(e) => onUpdateMember({ ...member, firstName: e.target.value })}
-        />
-      </div>
-  
-      <div className="space-y-1">
-        <Label htmlFor="lastName">Last Name</Label>
-        <Input
-          id="lastName"
-          value={member.lastName}
-          onChange={(e) => onUpdateMember({ ...member, lastName: e.target.value })}
-        />
-      </div>
-  
-      <div className="space-y-1">
-        <Label htmlFor="gender">Gender</Label>
-        <Select
-          value={member.gender}
-          onValueChange={(value) => onUpdateMember({ ...member, gender: value as 'male' | 'female' })}
-        >
-          <SelectTrigger id="gender">
-            <SelectValue placeholder="Select gender" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="male">Male</SelectItem>
-            <SelectItem value="female">Female</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-  
-      <div className="flex items-center space-x-1">
-        <Switch
-          id="alive"
-          checked={member.alive}
-          onCheckedChange={(checked) => onUpdateMember({ 
-            ...member, 
-            alive: checked,
-            deathDate: checked ? undefined : member.deathDate
-          })}
-        />
-        <Label htmlFor="alive">Alive</Label>
-      </div>
-  
-      <div className="space-y-1">
-        <Label htmlFor="birthDate">Birth Date</Label>
-        <div className="relative">
-          <CalendarIcon className="absolute left-2 top-2 h-3.5 w-3.5 text-muted-foreground" />
-          <Input
-            id="birthDate"
-            type="date"
-            value={member.birthDate}
-            onChange={(e) => onUpdateMember({ ...member, birthDate: e.target.value })}
-            className="pl-7"
-          />
+  return ( 
+    <Card className="relative top-0 w-full max-w-sm mx-auto sm:w-80">
+      <CardHeader>
+        <CardTitle className="text-center text-base sm:text-lg">Member Details</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4 px-4 sm:px-6">
+        {/* Avatar Section */}
+        <div className="flex flex-col items-center space-y-3">
+          <Avatar className="w-10 h-10 ">
+            <AvatarImage src={member.profileImage} alt={`${member.firstName} ${member.lastName}`} />
+            <AvatarFallback>{member.firstName[0]}{member.lastName[0]}</AvatarFallback>
+          </Avatar>
+          <Label htmlFor="image-upload" className="cursor-pointer text-sm text-muted-foreground">
+            <Input id="image-upload" type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+            <div className="flex items-center space-x-1">
+              <UploadIcon size={14} />
+              <span>Upload Image</span>
+            </div>
+          </Label>
         </div>
-      </div>
-  
-      {!member.alive && (
-        <div className="space-y-1">
-          <Label htmlFor="deathDate">Death Date</Label>
-          <div className="relative">
-            <CalendarIcon className="absolute left-2 top-2 h-3.5 w-3.5 text-muted-foreground" />
+
+        <div className='flex justify-normal gap-2 '>
+          {/* First Name */}
+          <div className="space-y-1">
+            <Label htmlFor="firstName" className="text-sm">First Name</Label>
             <Input
-              id="deathDate"
-              type="date"
-              value={member.deathDate || ''}
-              onChange={(e) => onUpdateMember({ ...member, deathDate: e.target.value })}
-              className="pl-7"
+              id="firstName"
+              value={member.firstName}
+              onChange={(e) => onUpdateMember({ ...member, firstName: e.target.value })}
+              className="text-sm"
+            />
+          </div>
+
+          {/* Last Name */}
+          <div className="space-y-1">
+            <Label htmlFor="lastName" className="text-sm">Last Name</Label>
+            <Input
+              id="lastName"
+              value={member.lastName}
+              onChange={(e) => onUpdateMember({ ...member, lastName: e.target.value })}
+              className="text-sm"
             />
           </div>
         </div>
-      )}
-  
-      <Button
-        variant="destructive"
-        className="w-full text-sm py-2"
-        onClick={() => onDeleteMember(member.id)}
-      >
-        <Trash2Icon className="mr-1.5 h-3.5 w-3.5" />
-        Delete
-      </Button>
-    </CardContent>
-  </Card>
-  
+
+        {/* Gender */}
+        <div className="space-y-1">
+          <Label htmlFor="gender" className="text-sm">Gender</Label>
+          <Select
+            value={member.gender}
+            onValueChange={(value) => onUpdateMember({ ...member, gender: value as 'male' | 'female' })}
+          >
+            <SelectTrigger id="gender" className="text-sm">
+              <SelectValue placeholder="Select gender" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="male">Male</SelectItem>
+              <SelectItem value="female">Female</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Alive Switch */}
+        <div className="flex items-center justify-between">
+          <Label htmlFor="alive" className="text-sm">Alive</Label>
+          <Switch
+            id="alive"
+            checked={member.alive}
+            onCheckedChange={(checked) =>
+              onUpdateMember({
+                ...member,
+                alive: checked,
+                deathDate: checked ? undefined : member.deathDate,
+              })
+            }
+          />
+        </div>
+
+        {/* Birth Date */}
+        <div className="space-y-1">
+          <Label htmlFor="birthDate" className="text-sm">Birth Date</Label>
+          <div className="relative">
+            <CalendarIcon className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              id="birthDate"
+              type="date"
+              value={member.birthDate}
+              onChange={(e) => onUpdateMember({ ...member, birthDate: e.target.value })}
+              className="pl-8 text-sm"
+            />
+          </div>
+        </div>
+
+        {/* Death Date */}
+        {!member.alive && (
+          <div className="space-y-1">
+            <Label htmlFor="deathDate" className="text-sm">Death Date</Label>
+            <div className="relative">
+              <CalendarIcon className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                id="deathDate"
+                type="date"
+                value={member.deathDate || ''}
+                onChange={(e) => onUpdateMember({ ...member, deathDate: e.target.value })}
+                className="pl-8 text-sm"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Delete Button */}
+        <Button
+          variant="destructive"
+          className="w-full text-sm"
+          onClick={() => onDeleteMember(member.id)}
+        >
+          <Trash2Icon className="mr-2 h-4 w-4" />
+          Delete Member
+        </Button>
+      </CardContent>
+    </Card>
+
   )
 }
-

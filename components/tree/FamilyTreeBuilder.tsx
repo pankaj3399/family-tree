@@ -8,6 +8,9 @@ import { MemberEditPanel } from "./MemberEditPanel";
 import { TREE_TEMPLATES, DEFAULT_AVATARS } from "@/utils/constants";
 import { Button } from "../ui/button";
 import { useAuth } from "@clerk/nextjs";
+import { IoIosSettings } from "react-icons/io";
+import { MdOutlineClear } from "react-icons/md";
+import { FaUser } from "react-icons/fa";
 
 interface FamilyMember {
   id: number;
@@ -74,7 +77,16 @@ const FamilyTreeBuilder = ({tree, id}:{
 
   const [autoSaveStatus, setAutoSaveStatus] = useState<string>('');
 
-  
+  const [isSettingsPanelVisible, setIsSettingsPanelVisible] = useState(false);
+  const [isMemberEditPanelVisible, setIsMemberEditPanelVisible] = useState(false);
+
+  const toggleMemberEditPanel = () => {
+    setIsMemberEditPanelVisible((prevState) => !prevState);
+  };
+
+  const toggleSettingsPanel = () => {
+    setIsSettingsPanelVisible((prevState) => !prevState);
+  };
   const handleImageUpload = async (file: File): Promise<string | null> => {
     if (!file) return null;
     
@@ -351,92 +363,86 @@ let familyData = [
       setSelectedMember(null);
     }
   };
+  return (
+    <div className="md:h-[90vh] h-full flex w-screen flex-col lg:flex-row overflow-hidden">
+      <div className="sm:mt-4 mt-10 px-6  fixed  shadow-lg p-4  z-50">
+        {/* Sidebar */}
+        <button
+          onClick={toggleMemberEditPanel}
+          className="bg-black text-white rounded "
+        >
+          {isMemberEditPanelVisible ? <MdOutlineClear className="w-8 h-8"/> : <FaUser className="hidden w-6 h-6"/>}
+        </button>
 
-  return(
-  <div className="h-[100vh]  flex overflow-hidden ">
-
-    <div className="">
-     <aside className="w-[25vw] p-4 bg-background border-r ">
-       <MemberEditPanel 
-         member={selectedMember}
-         onUpdateMember={updateMemberInfo}
-         onDeleteMember={deleteMember}
-         onImageUpload={handleImageUpload}
-       />
-     </aside>
-    </div>
-    <div>
-      <div>
-          {/* Settings Panel at the top */}
-          <div className="p-2 bg-background border-b">
-            <SettingsPanel 
-              tree={treeData}
-              settings={treeSettings}
-              onSettingsChange={(updatedSettings) => setTreeSettings(updatedSettings)}
+        {/* Member Edit Panel (toggle visibility) */}
+        {isMemberEditPanelVisible && (
+          <div className="px-4 bg-background ">
+            <MemberEditPanel
+              member={selectedMember}
+              onUpdateMember={updateMemberInfo}
+              onDeleteMember={deleteMember}
+              onImageUpload={handleImageUpload}
             />
           </div>
+        )}
       </div>
-      <div className="">
-        <div className=" h-full">
-        <main className="flex-1 p-4 relative  ">
-        <div ref={treeContainerRef} className="w-full max-h-[60vh]  " />
-                {autoSaveStatus && (
-                  <div className="absolute top-4 left-4 bg-yellow-200 text-yellow-800 p-2 rounded shadow">
-                    {autoSaveStatus}
-                  </div>
-                )}
-        </main>
-        </div>  
-      </div>    
-          <div className=" w-full">
-              {
-                treeData && <AddMemberModal 
-                isOpen={addMemberModalOpen}
-                onClose={() => setAddMemberModalOpen(false)}
-                onAddMember={addFamilyMember}
-                members={treeData.members}
-                selectedMember={selectedMember}
-              />  
-              }
+
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col h-full">
+        {/* Settings Panel */}
+        <div className="bg-background  flex justify-end ">
+          <div className=" fixed pt-10 shadow-lg p-4  z-50">
+            {/* Toggle Button */}
+            <button
+              onClick={toggleSettingsPanel}
+              className="mb-4 px-4 py-2   text-white rounded "
+            >
+              {isSettingsPanelVisible ? <MdOutlineClear className="w-8 h-8"/> : <IoIosSettings className="w-8 h-8"/> }
+            </button>
           </div>
-            <div className="flex items-center justify-center gap-10 ">
-              <Button
-                onClick={() => setAddMemberModalOpen(true)}
-                className=""
-              >
-                + Add
-              </Button>
-              <Button
-                onClick={saveTreeToBackend}
-                className=""
-                variant="outline"
-              >
-                Save
-              </Button>
+
+          {/* Settings Panel (toggle visibility) */}
+          {isSettingsPanelVisible && (
+            <div className="p-2 bg-background top-32 sm:top-32 w-full  md:w-[50vw] lg:w-[60vw] xl:w-[70vw]   fixed z-40">
+              <SettingsPanel
+                settings={treeSettings}
+                onSettingsChange={(updatedSettings) => setTreeSettings(updatedSettings)}
+                tree={tree}
+              />
             </div>
+          )}
+
+        </div>
+        {/* Tree Container */}
+        <main className="flex-1 p-4  sm:mt-20 mt-24 h-full">
+          <div
+            ref={treeContainerRef}
+            onClick={toggleMemberEditPanel}
+            className="  h-[65vh]  md:h-[70vh] bg-gray-900"
+          />
+          {autoSaveStatus && (
+            <div className=" top-4 left-4 bg-yellow-200 text-yellow-800 p-2 rounded shadow">
+              {autoSaveStatus}
+            </div>
+          )}
+        </main>
+        {/* Add Member Modal */}
+        <div className="w-full">
+          <AddMemberModal
+            isOpen={addMemberModalOpen}
+            onClose={() => setAddMemberModalOpen(false)}
+            onAddMember={addFamilyMember}
+            selectedMember={selectedMember}
+          />
+        </div>
+        {/* Buttons */}
+        <div className="flex md:flex-row items-center pt-0 sm: justify-center gap-4 z-40">
+          <Button className="p-4 px-3 py-2 h-10 w-20 bg-gradient-to-b from-orange-500 to-pink-600" onClick={() => setAddMemberModalOpen(true)}>+ Add</Button>
+          <Button className="p-4 px-3 py-2 h-10 w-20 bg-gradient-to-b from-orange-500 to-pink-600" onClick={saveTreeToBackend} variant="outline">Save</Button>
+        </div>
+      </div>
     </div>
-
-    
-  </div> 
-  
-  )
-
+  );
 }
-
-export default FamilyTreeBuilder
-
-
-// return (
-    
-
-
-
-
-  //   <AddMemberModal 
-  //     isOpen={addMemberModalOpen}
-  //     onClose={() => setAddMemberModalOpen(false)}
-  //     onAddMember={addFamilyMember}
-  //   />
-  // </div> */}
-  
-// )
+export default FamilyTreeBuilder;
