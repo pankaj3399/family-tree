@@ -29,6 +29,8 @@ export const AddMemberModal: React.FC<AddMemberModalProps> = ({
   selectedMember,
   members
 }) => {
+
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
@@ -57,8 +59,12 @@ export const AddMemberModal: React.FC<AddMemberModalProps> = ({
               </Button>
             ))
           ))}
-          <AddSonModal onClose={onClose} onAddMember={onAddMember} selectedMember={selectedMember} members={members ?? []}   />
-          <AddDaughterModal onClose={onClose} onAddMember={onAddMember} selectedMember={selectedMember} members={members ?? []}   />
+          {
+            members && <>
+              <AddSonModal onClose={onClose} onAddMember={onAddMember} selectedMember={selectedMember} members={members ?? []}   />
+              <AddDaughterModal onClose={onClose} onAddMember={onAddMember} selectedMember={selectedMember} members={members ?? []}   />
+            </>
+          }
         </div>
       </DialogContent>
     </Dialog>
@@ -131,6 +137,8 @@ const AddDaughterModal = ({members, selectedMember, onAddMember, onClose}:{
 
   const [parents, setParents] = useState<any[]>([])
   const [open, setIsOpen] = useState(false)
+  console.log(members);
+  
 
   useEffect(()=>{
     if(!selectedMember || !members) return;
@@ -176,7 +184,3 @@ const AddDaughterModal = ({members, selectedMember, onAddMember, onClose}:{
     </Dialog>
   )
 }
-
-
-
-

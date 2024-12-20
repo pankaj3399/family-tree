@@ -218,11 +218,6 @@ const FamilyTreeBuilder = ({tree, id}:{
           male: { template: 'maleTemplate' },
           female: { template: 'femaleTemplate' },
         },
-        nodeMenu: {
-          add: { text: "Add Member" },
-          remove: { text: "Remove Member" },
-          save: { text: "Save Tree" },
-        },
         scaleMax:2,
         scaleMin:0.2,     
         scaleInitial:treeSettings.zoom,
@@ -239,7 +234,7 @@ const FamilyTreeBuilder = ({tree, id}:{
       // Define templates for gender-based color coding
 // Define base template for rectangular nodes
 FamilyTree.templates.base = Object.assign({}, FamilyTree.templates.base, {
-  node: `<rect x="0" y="0" width="200" height="100" fill=${treeSettings.backgroundColor} stroke-width="1" stroke="#CCCCCC" rx="10" ry="10"></rect>`,
+  node: `<rect x="0" y="0" width="250" height="100" fill=${treeSettings.backgroundColor} stroke-width="1" stroke="#CCCCCC" rx="10" ry="10"></rect>`,
   field_0: `<text x="5" y="25" style="font-size: 16px; font-weight: bold;" fill="#333">{val}</text>`,
   field_1: `<text x="5" y="45" style="font-size: 12px;" fill="#666">{val}</text>`,
   field_2: `<text x="5" y="60" style="font-size: 12px;" fill="#666">{val}</text>`,
@@ -257,14 +252,14 @@ FamilyTree.templates.base = Object.assign({}, FamilyTree.templates.base, {
 });
 
 FamilyTree.templates.maleTemplate = Object.assign({}, FamilyTree.templates.base, {
-  node: `<rect x="0" y="0" width="200" height="100" fill=${treeSettings.maleColor} stroke-width="1" stroke="#CCCCCC" rx="10" ry="10"></rect>`,
+  node: `<rect x="0" y="0" width="250" height="100" fill=${treeSettings.maleColor} stroke-width="1" stroke="#CCCCCC" rx="10" ry="10"></rect>`,
   field_0: `<text x="5" y="25" style="font-size: 16px;" fill="#ffffff">{val}</text>`,
   field_1: `<text x="5" y="45" style="font-size: 12px;" fill="#ffffff">{val}</text>`,
   field_2: `<text x="5" y="60" style="font-size: 12px;" fill="#ffffff">{val}</text>`,
 });
 
 FamilyTree.templates.femaleTemplate = Object.assign({}, FamilyTree.templates.base, {
-  node: `<rect x="0" y="0" width="200" height="100" fill=${treeSettings.femaleColor} stroke-width="1" stroke="#CCCCCC" rx="10" ry="10"></rect>`,
+  node: `<rect x="0" y="0" width="250" height="100" fill=${treeSettings.femaleColor} stroke-width="1" stroke="#CCCCCC" rx="10" ry="10"></rect>`,
   field_0: `<text x="5" y="25" style="font-size: 16px;" fill="#ffffff">{val}</text>`,
   field_1: `<text x="5" y="45" style="font-size: 12px;" fill="#ffffff">{val}</text>`,
   field_2: `<text x="5" y="60" style="font-size: 12px;" fill="#ffffff">{val}</text>`,
@@ -395,9 +390,9 @@ let familyData = [
             {/* Toggle Button */}
             <button
               onClick={toggleSettingsPanel}
-              className="mb-4 px-4 py-2   text-white rounded "
+              className=" text-white px-4 py-2   rounded "
             >
-              {isSettingsPanelVisible ? <MdOutlineClear className="w-8 h-8"/> : <IoIosSettings className="w-8 h-8"/> }
+              {isSettingsPanelVisible ? <MdOutlineClear className=" w-8 h-8"/> : <IoIosSettings className="w-8 h-8"/> }
             </button>
           </div>
 
@@ -414,7 +409,7 @@ let familyData = [
 
         </div>
         {/* Tree Container */}
-        <main className="flex-1 p-4  sm:mt-20 mt-24 h-full">
+        <main className="flex-1 p-4  sm:mt-10 mt-14 h-full">
           <div
             ref={treeContainerRef}
             onClick={toggleMemberEditPanel}
@@ -428,12 +423,13 @@ let familyData = [
         </main>
         {/* Add Member Modal */}
         <div className="w-full">
-          <AddMemberModal
+        <AddMemberModal
             isOpen={addMemberModalOpen}
             onClose={() => setAddMemberModalOpen(false)}
             onAddMember={addFamilyMember}
             selectedMember={selectedMember}
-          />
+            members={members}
+          />
         </div>
         {/* Buttons */}
         <div className="flex md:flex-row items-center pt-0 justify-center gap-4 z-40">
