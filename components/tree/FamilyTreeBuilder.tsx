@@ -212,15 +212,22 @@ const FamilyTreeBuilder = ({tree, id}:{
           save: { text: "Save Tree" },
         },
         scaleMax:2,
-        scaleMin:0.6,     
+        scaleMin:0.2,     
         scaleInitial:treeSettings.zoom,
-        
+        menu:{
+          svg: { text: "Export SVG" },
+          csv: { text: "Export CSV" },
+        },
+        toolbar:{
+          zoom:true,
+          fit:true
+        }
       });
 
       // Define templates for gender-based color coding
 // Define base template for rectangular nodes
 FamilyTree.templates.base = Object.assign({}, FamilyTree.templates.base, {
-  node: `<rect x="0" y="0" width="200" height="100" fill="#E0E0E0" stroke-width="1" stroke="#CCCCCC" rx="10" ry="10"></rect>`,
+  node: `<rect x="0" y="0" width="200" height="100" fill=${treeSettings.backgroundColor} stroke-width="1" stroke="#CCCCCC" rx="10" ry="10"></rect>`,
   field_0: `<text x="5" y="25" style="font-size: 16px; font-weight: bold;" fill="#333">{val}</text>`,
   field_1: `<text x="5" y="45" style="font-size: 12px;" fill="#666">{val}</text>`,
   field_2: `<text x="5" y="60" style="font-size: 12px;" fill="#666">{val}</text>`,
@@ -238,14 +245,14 @@ FamilyTree.templates.base = Object.assign({}, FamilyTree.templates.base, {
 });
 
 FamilyTree.templates.maleTemplate = Object.assign({}, FamilyTree.templates.base, {
-  node: `<rect x="0" y="0" width="200" height="100" fill="#4A90E2" stroke-width="1" stroke="#CCCCCC" rx="10" ry="10"></rect>`,
+  node: `<rect x="0" y="0" width="200" height="100" fill=${treeSettings.maleColor} stroke-width="1" stroke="#CCCCCC" rx="10" ry="10"></rect>`,
   field_0: `<text x="5" y="25" style="font-size: 16px;" fill="#ffffff">{val}</text>`,
   field_1: `<text x="5" y="45" style="font-size: 12px;" fill="#ffffff">{val}</text>`,
   field_2: `<text x="5" y="60" style="font-size: 12px;" fill="#ffffff">{val}</text>`,
 });
 
 FamilyTree.templates.femaleTemplate = Object.assign({}, FamilyTree.templates.base, {
-  node: `<rect x="0" y="0" width="200" height="100" fill="#F5A623" stroke-width="1" stroke="#CCCCCC" rx="10" ry="10"></rect>`,
+  node: `<rect x="0" y="0" width="200" height="100" fill=${treeSettings.femaleColor} stroke-width="1" stroke="#CCCCCC" rx="10" ry="10"></rect>`,
   field_0: `<text x="5" y="25" style="font-size: 16px;" fill="#ffffff">{val}</text>`,
   field_1: `<text x="5" y="45" style="font-size: 12px;" fill="#ffffff">{val}</text>`,
   field_2: `<text x="5" y="60" style="font-size: 12px;" fill="#ffffff">{val}</text>`,
@@ -286,7 +293,7 @@ let familyData = [
       return;
     }
 
-    const newId = members.length + 1;
+    const newId = Number(members[members.length - 1].id) + 1;
     const newMember: FamilyMember = {
       id: newId,
       firstName: `New ${relationship} ${newId}`,
