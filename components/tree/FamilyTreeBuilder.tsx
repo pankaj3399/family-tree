@@ -144,7 +144,7 @@ const FamilyTreeBuilder = ({tree, id}:{
     const fetchTree = async () => {
       if(!userId) return
       try{
-        const res = await fetch(`http://localhost:3001/api/trees/${id}`,{
+        const res = await fetch(`/api/trees/${id}`,{
           headers:{
               "user-id":userId ?? ""
           }
@@ -222,6 +222,7 @@ const FamilyTreeBuilder = ({tree, id}:{
           zoom:true,
           fit:true
         }
+        
       });
 
       // Define templates for gender-based color coding

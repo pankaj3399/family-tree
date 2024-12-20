@@ -19,7 +19,7 @@ const EditPage = ({params}:{
     if(!userId){
       return;
     }
-    fetch(`http://localhost:3001/api/trees/${id}`,{
+    fetch(`/api/trees/${id}`,{
       headers: {
         "user-id": userId || ""
       }
