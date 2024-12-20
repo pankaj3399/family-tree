@@ -7,6 +7,7 @@ import { SettingsPanel } from "./SettingsPanel";
 import { MemberEditPanel } from "./MemberEditPanel";
 import { TREE_TEMPLATES, DEFAULT_AVATARS } from "@/utils/constants";
 import { Button } from "../ui/button";
+import { useAuth } from "@clerk/nextjs";
 
 interface FamilyMember {
   id: number;
@@ -32,12 +33,15 @@ interface Settings {
   orientation: string;
   template: string;
   maxMembers: number;
+  zoom:number
 }
 
-const FamilyTreeBuilder = ({tree}:{
-  tree:any
+const FamilyTreeBuilder = ({tree, id}:{
+  tree:any,
+  id:string
 }) => {
   const treeContainerRef = useRef<HTMLDivElement>(null);
+  const {userId} = useAuth()
   const [members, setMembers] = useState<FamilyMember[]>([
     {
       id: 1,
@@ -49,6 +53,8 @@ const FamilyTreeBuilder = ({tree}:{
       profileImage: DEFAULT_AVATARS.male,
     }
   ]);
+
+  const [treeData, setTreeData] = useState<any>();
 
   const [selectedMember, setSelectedMember] = useState<FamilyMember | null>(null);
   const [addMemberModalOpen, setAddMemberModalOpen] = useState(false);
@@ -63,6 +69,7 @@ const FamilyTreeBuilder = ({tree}:{
     orientation: "dark",
     template: "hugo",
     maxMembers: 50, 
+    zoom:0.7
   });
 
   const [autoSaveStatus, setAutoSaveStatus] = useState<string>('');
@@ -109,7 +116,7 @@ const FamilyTreeBuilder = ({tree}:{
         name: tree.name || "Untitled Tree",
         members: members.map(member => ({
           ...member,
-          img: member.profileImage
+          img: member.img
         })),
         template: treeSettings.template,
       });
@@ -126,10 +133,37 @@ const FamilyTreeBuilder = ({tree}:{
     }
   };
 
+  // useEffect(()=>{
+  //   if(!tree) return;    
+  //   console.log(tree);
+    
+  //   setMembers(tree.members)
+  // },[tree])
+
   useEffect(()=>{
-    if(!tree) return;    
-    setMembers(tree.members)
-  },[tree])
+    const fetchTree = async () => {
+      if(!userId) return
+      try{
+        const res = await fetch(`http://localhost:3001/api/trees/${id}`,{
+          headers:{
+              "user-id":userId ?? ""
+          }
+        })
+        const data = await res.json()
+        console.log(JSON.stringify(data));
+        
+        setTreeData(data)
+      }catch(err){
+        console.log(err);
+      }
+    }
+    fetchTree()
+  },[userId])
+
+  useEffect(()=>{
+    if(!treeData) return;
+    setMembers(treeData.members)
+  },[treeData])
 
   // Auto-save functionality
   // useEffect(() => {
@@ -160,8 +194,8 @@ const FamilyTreeBuilder = ({tree}:{
         nodeBinding: {
           field_0: "name",
           img_0: "img",
-          field_1: "birthDate",
-          field_2: "deathDate",
+          field_1: treeSettings.showBirthDates ? "birthDate":"",
+          field_2: treeSettings.showDeathDates ? "deathDate":"",
         },
         zoom: {
           speed: 50,
@@ -177,36 +211,49 @@ const FamilyTreeBuilder = ({tree}:{
           remove: { text: "Remove Member" },
           save: { text: "Save Tree" },
         },
+        scaleMax:2,
+        scaleMin:0.6,     
+        scaleInitial:treeSettings.zoom,
+        
       });
 
       // Define templates for gender-based color coding
 // Define base template for rectangular nodes
 FamilyTree.templates.base = Object.assign({}, FamilyTree.templates.base, {
-  node: `<rect x="0" y="0" width="120" height="60" fill="#E0E0E0" stroke-width="1" stroke="#CCCCCC"></rect>`,
-  field_0: `<text x="10" y="20" style="font-size: 16px; font-weight: bold;" fill="#333">{val}</text>`,
-  field_1: `<text x="10" y="40" style="font-size: 12px;" fill="#666">{birthDate}</text>`,
-  field_2: `<text x="10" y="55" style="font-size: 12px;" fill="#666">{deathDate}</text>`,
-});
+  node: `<rect x="0" y="0" width="200" height="100" fill="#E0E0E0" stroke-width="1" stroke="#CCCCCC" rx="10" ry="10"></rect>`,
+  field_0: `<text x="5" y="25" style="font-size: 16px; font-weight: bold;" fill="#333">{val}</text>`,
+  field_1: `<text x="5" y="45" style="font-size: 12px;" fill="#666">{val}</text>`,
+  field_2: `<text x="5" y="60" style="font-size: 12px;" fill="#666">{val}</text>`,
+  img_0: `
+<defs>
+  <clipPath id="clip-circle">
+    <circle cx="190" cy="15" r="35"></circle>
+  </clipPath>
+</defs>
+<circle cx="190" cy="15" r="40" fill="white"></circle>
+<image x="150" y="-25" width="80" height="80" href="{val}" clip-path="url(#clip-circle)" preserveAspectRatio="xMidYMid slice"></image>
+`,
 
+
+});
 
 FamilyTree.templates.maleTemplate = Object.assign({}, FamilyTree.templates.base, {
-  node: `<rect x="0" y="0" width="120" height="60" fill="${treeSettings.maleColor}" stroke-width="1" stroke="#CCCCCC"></rect>`,
-  field_0: `<text x="10" y="20" style="font-size: 16px;" fill="#ffffff">{val}</text>`,
-  field_1: `<text x="10" y="40" style="font-size: 12px;" fill="#ffffff">{birthDate}</text>`,
-  field_2: `<text x="10" y="55" style="font-size: 12px;" fill="#ffffff">{deathDate}</text>`,
+  node: `<rect x="0" y="0" width="200" height="100" fill="#4A90E2" stroke-width="1" stroke="#CCCCCC" rx="10" ry="10"></rect>`,
+  field_0: `<text x="5" y="25" style="font-size: 16px;" fill="#ffffff">{val}</text>`,
+  field_1: `<text x="5" y="45" style="font-size: 12px;" fill="#ffffff">{val}</text>`,
+  field_2: `<text x="5" y="60" style="font-size: 12px;" fill="#ffffff">{val}</text>`,
 });
-
 
 FamilyTree.templates.femaleTemplate = Object.assign({}, FamilyTree.templates.base, {
-  node: `<rect x="0" y="0" width="120" height="60" fill="${treeSettings.femaleColor}" stroke-width="1" stroke="#CCCCCC"></rect>`,
-  field_0: `<text x="10" y="20" style="font-size: 16px;" fill="#ffffff">{val}</text>`,
-  field_1: `<text x="10" y="40" style="font-size: 12px;" fill="#ffffff">{birthDate}</text>`,
-  field_2: `<text x="10" y="55" style="font-size: 12px;" fill="#ffffff">{deathDate}</text>`,
+  node: `<rect x="0" y="0" width="200" height="100" fill="#F5A623" stroke-width="1" stroke="#CCCCCC" rx="10" ry="10"></rect>`,
+  field_0: `<text x="5" y="25" style="font-size: 16px;" fill="#ffffff">{val}</text>`,
+  field_1: `<text x="5" y="45" style="font-size: 12px;" fill="#ffffff">{val}</text>`,
+  field_2: `<text x="5" y="60" style="font-size: 12px;" fill="#ffffff">{val}</text>`,
 });
-
 
 FamilyTree.templates.male = FamilyTree.templates.maleTemplate;
 FamilyTree.templates.female = FamilyTree.templates.femaleTemplate;
+
 
 // Example family data
 let familyData = [
@@ -242,12 +289,13 @@ let familyData = [
     const newId = members.length + 1;
     const newMember: FamilyMember = {
       id: newId,
-      firstName: `New ${relationship}`,
+      firstName: `New ${relationship} ${newId}`,
       lastName: selectedMember.lastName,
       gender,
       alive: true,
       birthDate: new Date().toISOString().split('T')[0],
       profileImage: gender === 'male' ? DEFAULT_AVATARS.male : DEFAULT_AVATARS.female,
+      img: gender === 'male' ? DEFAULT_AVATARS.male : DEFAULT_AVATARS.female,
     };
 
     // Set appropriate relationships
@@ -263,6 +311,7 @@ let familyData = [
       case 'husband':
       case 'wife':
         newMember.pids = [selectedMember.id];
+        selectedMember.pids = [...selectedMember.pids ?? [], newMember.id]
         break;
       case 'father':
       case 'mother':
@@ -312,6 +361,7 @@ let familyData = [
           {/* Settings Panel at the top */}
           <div className="p-2 bg-background border-b">
             <SettingsPanel 
+              tree={treeData}
               settings={treeSettings}
               onSettingsChange={(updatedSettings) => setTreeSettings(updatedSettings)}
             />

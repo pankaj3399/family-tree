@@ -150,7 +150,8 @@ interface FamilyMember {
   alive: boolean
   birthDate: string
   deathDate?: string
-  profileImage: string
+  profileImage: string,
+  img?:string
 }
 
 interface MemberEditPanelProps {
@@ -173,7 +174,7 @@ export const MemberEditPanel: React.FC<MemberEditPanelProps> = ({
     if (file) {
       const uploadedImageUrl = await onImageUpload(file)
       if (uploadedImageUrl) {
-        onUpdateMember({ ...member, profileImage: uploadedImageUrl })
+        onUpdateMember({ ...member, profileImage: uploadedImageUrl, img:uploadedImageUrl })
       }
     }
   }
@@ -186,7 +187,7 @@ export const MemberEditPanel: React.FC<MemberEditPanelProps> = ({
       <CardContent className="space-y-4">
         <div className="flex flex-col items-center space-y-2">
           <Avatar className="w-24 h-24">
-            <AvatarImage src={member.profileImage} alt={`${member.firstName} ${member.lastName}`} />
+            <AvatarImage src={member.img} alt={`${member.firstName} ${member.lastName}`} />
             <AvatarFallback>{member.firstName[0]}{member.lastName[0]}</AvatarFallback>
           </Avatar>
           <Label htmlFor="image-upload" className="cursor-pointer">

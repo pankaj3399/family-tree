@@ -17,7 +17,7 @@ export interface FamilyTree {
 // console.log(userId);
 
 
-  const BASE_URL = "http://localhost:3000";
+  const BASE_URL = "http://localhost:3001";
 
 
 
@@ -46,10 +46,21 @@ export interface FamilyTree {
     
     const {userId} = await auth()
     // console.log("SERVER: "+sessionId);
-    const response = await fetch(`http://localhost:3000/api/trees`, {
+    const response = await fetch(`http://localhost:3001/api/trees`, {
       method: "POST",
       headers: { "user-id":userId || "" , "Content-Type": "application/json" },
-      body: JSON.stringify({ name }),
+      body: JSON.stringify({ name, members:[
+        {
+              id: 1,
+              firstName: "John",
+              lastName: "Doe",
+              gender: "male",
+              alive: true,
+              birthDate: "1980-01-01",
+              profileImage: "",
+            }
+      ]
+       }),
     });
     if (!response.ok) throw new Error("Failed to create tree");
     return response.json();
