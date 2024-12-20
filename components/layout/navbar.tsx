@@ -190,7 +190,18 @@ export  function Navbar  ()  {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ 
-          name: treeName.trim()
+          name: treeName.trim(),
+          members:[
+            {
+                  id: 1,
+                  firstName: "John",
+                  lastName: "Doe",
+                  gender: "male",
+                  alive: true,
+                  birthDate: "1980-01-01",
+                  profileImage: "",
+                }
+          ]
         })
       });
 

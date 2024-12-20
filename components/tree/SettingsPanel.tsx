@@ -18,14 +18,16 @@ interface Settings {
   orientation: string
   template: string
   maxMembers: number
+  zoom:number
 }
 
 interface SettingsPanelProps {
   settings: Settings
-  onSettingsChange: (updatedSettings: Settings) => void
+  onSettingsChange: (updatedSettings: Settings) => void,
+  tree: any
 }
 
-export const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, onSettingsChange }) => {
+export const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, onSettingsChange, tree }) => {
   const [localSettings, setLocalSettings] = useState<Settings>(settings)
 
   const handleChange = (field: keyof Settings, value: any) => {
@@ -48,14 +50,20 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, onSettin
           <div className="flex items-center space-x-4">
             <Button
               size="sm"
-              onClick={() => handleChange('maxMembers', localSettings.maxMembers + 1)}
+              onClick={() => {
+                const newZoom = localSettings.zoom + 0.2
+                if(newZoom < 2) handleChange('zoom', newZoom)
+              }}
               className="bg-blue-500 text-white hover:bg-blue-600"
             >
               Zoom In
             </Button>
             <Button
               size="sm"
-              onClick={() => handleChange('maxMembers', localSettings.maxMembers - 1)}
+              onClick={() => {
+                const newZoom = localSettings.zoom - 0.1
+                if(newZoom > 0.6) handleChange('zoom', newZoom)
+              }}
               className="bg-blue-500 text-white hover:bg-blue-600"
             >
               Zoom Out
@@ -159,17 +167,18 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, onSettin
           {/* Max Members Slider */}
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
-              <Label htmlFor="maxMembers" className="text-gray-700">Max Members:</Label>
-              <Slider
+              <Label htmlFor="maxMembers" className="text-gray-700">Members:</Label>
+              {/* <Slider
                 id="maxMembers"
                 min={1}
                 max={100}
                 step={1}
                 value={[localSettings.maxMembers]}
                 onValueChange={(value) => handleChange('maxMembers', value[0])}
-                className="w-[200px]"
-              />
-              <span className="w-8 text-center">{localSettings.maxMembers}</span>
+                className="w-[200px] disabled:bg-gray-100"
+                disabled
+              /> */}
+              <span className="w-8 text-center">{tree?.memberCount ?? "?"}/{localSettings.maxMembers}</span>
             </div>
           </div>
 
