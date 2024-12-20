@@ -221,8 +221,7 @@ const FamilyTreeBuilder = ({tree, id}:{
         toolbar:{
           zoom:true,
           fit:true
-        }
-        
+        },
       });
 
       // Define templates for gender-based color coding
@@ -283,7 +282,7 @@ let familyData = [
   }, [members, treeSettings]);
 
   // Add Family Member Logic
-  const addFamilyMember = (relationship: string, gender: 'male' | 'female') => {
+  const addFamilyMember = (relationship: string, gender: 'male' | 'female', mid?:string, fid?:string) => {
     if (!selectedMember) {
       alert("Please select a member to add a relationship.");
       return;
@@ -312,8 +311,10 @@ let familyData = [
       case 'daughter':
         if (selectedMember.gender === 'female') {
           newMember.mid = selectedMember.id;
+          newMember.fid = Number(fid) ?? 1
         } else if (selectedMember.gender === 'male') {
           newMember.fid = selectedMember.id;
+          newMember.mid = Number(mid) ?? 1
         }
         break;
       case 'husband':
@@ -388,11 +389,15 @@ let familyData = [
         </div>  
       </div>    
           <div className=" w-full">
-              <AddMemberModal 
-              isOpen={addMemberModalOpen}
-              onClose={() => setAddMemberModalOpen(false)}
-              onAddMember={addFamilyMember}
-            />  
+              {
+                treeData && <AddMemberModal 
+                isOpen={addMemberModalOpen}
+                onClose={() => setAddMemberModalOpen(false)}
+                onAddMember={addFamilyMember}
+                members={treeData.members}
+                selectedMember={selectedMember}
+              />  
+              }
           </div>
             <div className="flex items-center justify-center gap-10 ">
               <Button

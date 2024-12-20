@@ -1,20 +1,21 @@
 'use client'
 
-import React from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import React, { useEffect, useState } from 'react'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { X } from 'lucide-react'
 import { cn } from "@/lib/utils"
+import { DialogTrigger } from '@radix-ui/react-dialog'
 
 interface AddMemberModalProps {
   isOpen: boolean
   onClose: () => void
-  onAddMember: (relationship: string, gender: 'male' | 'female') => void
+  onAddMember: (relationship: string, gender: 'male' | 'female', mid?:string, fid?:string) => void,
+  members?: any[],
+  selectedMember: any
 }
 
 const relationships = [
-  { label: 'Son', value: 'son', genders: ['male'] },
-  { label: 'Daughter', value: 'daughter', genders: ['female'] },
   { label: 'Husband', value: 'husband', genders: ['male'] },
   { label: 'Wife', value: 'wife', genders: ['female'] },
   { label: 'Father', value: 'father', genders: ['male'] },
@@ -24,22 +25,16 @@ const relationships = [
 export const AddMemberModal: React.FC<AddMemberModalProps> = ({ 
   isOpen, 
   onClose, 
-  onAddMember 
+  onAddMember,
+  selectedMember,
+  members
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add Family Member</DialogTitle>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute right-4 top-4"
-            onClick={onClose}
-          >
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </Button>
+          
         </DialogHeader>
         <div className="grid grid-cols-2 gap-4 pt-4">
           {relationships.map((rel) => (
@@ -62,9 +57,126 @@ export const AddMemberModal: React.FC<AddMemberModalProps> = ({
               </Button>
             ))
           ))}
+          <AddSonModal onClose={onClose} onAddMember={onAddMember} selectedMember={selectedMember} members={members ?? []}   />
+          <AddDaughterModal onClose={onClose} onAddMember={onAddMember} selectedMember={selectedMember} members={members ?? []}   />
         </div>
       </DialogContent>
     </Dialog>
   )
 }
+
+
+
+const AddSonModal = ({members, selectedMember, onAddMember, onClose}:{
+  members:any[],
+  selectedMember: any,
+  onAddMember: (relationship: string, gender: 'male' | 'female', mid?:string, fid?:string) => void,
+  onClose: () => void
+}) => {
+
+  const [parents, setParents] = useState<any[]>([])
+  const [open, setIsOpen] = useState(false)
+
+  useEffect(()=>{
+    if(!selectedMember || !members) return;
+    setParents(members.filter(
+      member => selectedMember?.pids && selectedMember?.pids.includes(member.id)
+    ))
+  },[members,selectedMember])
+
+  return (
+    <Dialog open={open} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button className={cn(
+                    "h-auto py-4 text-white bg-blue-500 hover:bg-blue-600"
+                  )}>Add Son</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <h3>Select Parents</h3>
+        </DialogHeader>
+        <DialogDescription>
+            {
+              parents.map(parent => {
+                return (
+                  <Button className={cn(
+                    "h-auto py-4 text-white",
+                    parent.gender === 'male' ? 'bg-blue-500 hover:bg-blue-600' : 'bg-pink-500 hover:bg-pink-600'
+                  )} onClick={()=>{
+                    if(selectedMember.gender == 'male'){
+                      onAddMember("son", "male", parent.id, selectedMember.id)
+                    }else{
+                      onAddMember("son", "male",selectedMember.id, parent.id)
+                    }
+                    setIsOpen(false)
+                    onClose && onClose()
+                  }}>
+                    {parent.firstName}{" "}{parent.lastName}
+                  </Button>
+                )
+              })
+            }
+        </DialogDescription>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+const AddDaughterModal = ({members, selectedMember, onAddMember, onClose}:{
+  members:any[],
+  selectedMember: any,
+  onAddMember: (relationship: string, gender: 'male' | 'female', mid?:string, fid?:string) => void,
+  onClose: () => void
+}) => {
+
+  const [parents, setParents] = useState<any[]>([])
+  const [open, setIsOpen] = useState(false)
+
+  useEffect(()=>{
+    if(!selectedMember || !members) return;
+    setParents(members.filter(
+      member => selectedMember?.pids && selectedMember?.pids.includes(member.id)
+    ))
+  },[members,selectedMember])
+
+  return (
+    <Dialog open={open} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button className={cn(
+                    "h-auto py-4 text-white bg-pink-500 hover:bg-pink-600"
+                  )}>Add Daughter</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <h3>Select Parents</h3>
+        </DialogHeader>
+        <DialogDescription>
+            {
+              parents.map(parent => {
+                return (
+                  <Button className={cn(
+                    "h-auto py-4 text-white",
+                    parent.gender === 'male' ? 'bg-blue-500 hover:bg-blue-600' : 'bg-pink-500 hover:bg-pink-600'
+                  )} onClick={()=>{
+                    if(selectedMember.gender == 'male'){
+                      onAddMember("daughter", "female", parent.id, selectedMember.id)
+                    }else{
+                      onAddMember("daughter", "female",selectedMember.id, parent.id)
+                    }
+                    setIsOpen(false)
+                    onClose && onClose()
+                  }}>
+                    {parent.firstName}{" "}{parent.lastName}
+                  </Button>
+                )
+              })
+            }
+        </DialogDescription>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+
+
 
