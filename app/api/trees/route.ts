@@ -31,11 +31,12 @@ export async function POST(req: NextRequest) {
     
     if (!userId) return new Response("Unauthorized", { status: 401 });
 
-    const { name = "New Family Tree" } = await req.json();
+    const { name = "New Family Tree", members } = await req.json();
 
     const tree = await Tree.create({
       userId:User1._id,
       name,
+      members
     });
     return Response.json(tree);
   } catch (error) {

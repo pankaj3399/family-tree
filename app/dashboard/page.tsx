@@ -154,21 +154,41 @@ const Dashboard = () => {
       template: "Modern",
     };
 
-    const prevTrees = [...familyTrees];
-    setFamilyTrees((prev) => [...prev, tempTree]);
+    
 
-    await optimisticUpdate(
-      async () => {
-        const newTree = await createTree(treeName);
-        setFamilyTrees((prev) =>
-          prev.map((tree) => (tree._id === tempId ? newTree : tree))
-        );
-        setCreateTreeDialogOpen(false);
-        setTreeName("");
-        router.push(`/family-tree/${newTree._id}/edit`);      },
-      () => setFamilyTrees(prevTrees),
-      "Tree created successfully"
-    );
+    const response = await fetch('/api/trees', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 
+        name: treeName.trim(),
+        members:[
+          {
+                id: 1,
+                firstName: "Father",
+                lastName: "Doe",
+                gender: "male",
+                alive: true,
+                birthDate: "1980-01-01",
+                profileImage: "",
+              }
+        ]
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to create tree');
+    }
+
+    const newTree = await response.json();
+    const prevTrees = [...familyTrees];
+    setFamilyTrees((prev) => [...prev, newTree]);
+
+    toast({
+      title: "Success",
+      description: "Tree created successfully",
+    });
     setTreeCreating(false);
   };
 
