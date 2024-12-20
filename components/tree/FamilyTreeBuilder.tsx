@@ -362,10 +362,9 @@ let familyData = [
       setMembers(members.filter(m => m.id !== memberId));
       setSelectedMember(null);
     }
-  };
-  return (
+  };return (
     <div className="md:h-[90vh] h-full flex w-screen flex-col lg:flex-row overflow-hidden">
-      <div className="sm:mt-4 mt-10 px-6  fixed  shadow-lg p-4  z-50">
+      <div className="sm:mt-4 mt-10 px-6 bg-transparent fixed  shadow-lg p-4  z-50">
         {/* Sidebar */}
         <button
           onClick={toggleMemberEditPanel}
@@ -376,7 +375,7 @@ let familyData = [
 
         {/* Member Edit Panel (toggle visibility) */}
         {isMemberEditPanelVisible && (
-          <div className="px-4 bg-background ">
+          <div className="px-4 bg-transparent  ">
             <MemberEditPanel
               member={selectedMember}
               onUpdateMember={updateMemberInfo}
@@ -437,7 +436,7 @@ let familyData = [
           />
         </div>
         {/* Buttons */}
-        <div className="flex md:flex-row items-center pt-0 sm: justify-center gap-4 z-40">
+        <div className="flex md:flex-row items-center pt-0 justify-center gap-4 z-40">
           <Button className="p-4 px-3 py-2 h-10 w-20 bg-gradient-to-b from-orange-500 to-pink-600" onClick={() => setAddMemberModalOpen(true)}>+ Add</Button>
           <Button className="p-4 px-3 py-2 h-10 w-20 bg-gradient-to-b from-orange-500 to-pink-600" onClick={saveTreeToBackend} variant="outline">Save</Button>
         </div>
@@ -445,4 +444,4 @@ let familyData = [
     </div>
   );
 }
-export default FamilyTreeBuilder;
+export default FamilyTreeBuilder; 

@@ -178,16 +178,15 @@ export const MemberEditPanel: React.FC<MemberEditPanelProps> = ({
       }
     }
   }
-
-  return ( 
-    <Card className="relative top-0 w-full max-w-sm mx-auto sm:w-80">
+  return (
+    <Card className="relative top-0 w-full h-full max-w-sm mx-auto sm:w-80">
       <CardHeader>
         <CardTitle className="text-center text-base sm:text-lg">Member Details</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4 px-4 sm:px-6">
         {/* Avatar Section */}
         <div className="flex flex-col items-center space-y-3">
-          <Avatar className="w-10 h-10 ">
+          <Avatar className="w-10 h-10">
             <AvatarImage src={member.profileImage} alt={`${member.firstName} ${member.lastName}`} />
             <AvatarFallback>{member.firstName[0]}{member.lastName[0]}</AvatarFallback>
           </Avatar>
@@ -200,7 +199,7 @@ export const MemberEditPanel: React.FC<MemberEditPanelProps> = ({
           </Label>
         </div>
 
-        <div className='flex justify-normal gap-2 '>
+        <div className='flex justify-normal gap-2'>
           {/* First Name */}
           <div className="space-y-1">
             <Label htmlFor="firstName" className="text-sm">First Name</Label>
@@ -208,7 +207,7 @@ export const MemberEditPanel: React.FC<MemberEditPanelProps> = ({
               id="firstName"
               value={member.firstName}
               onChange={(e) => onUpdateMember({ ...member, firstName: e.target.value })}
-              className="text-sm"
+              className="text-sm w-32 "
             />
           </div>
 
@@ -219,7 +218,7 @@ export const MemberEditPanel: React.FC<MemberEditPanelProps> = ({
               id="lastName"
               value={member.lastName}
               onChange={(e) => onUpdateMember({ ...member, lastName: e.target.value })}
-              className="text-sm"
+              className="text-sm w-32"
             />
           </div>
         </div>
@@ -257,17 +256,17 @@ export const MemberEditPanel: React.FC<MemberEditPanelProps> = ({
           />
         </div>
 
+      <div className='flex'>
         {/* Birth Date */}
         <div className="space-y-1">
           <Label htmlFor="birthDate" className="text-sm">Birth Date</Label>
           <div className="relative">
-            <CalendarIcon className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               id="birthDate"
               type="date"
               value={member.birthDate}
               onChange={(e) => onUpdateMember({ ...member, birthDate: e.target.value })}
-              className="pl-8 text-sm"
+              className="text-xs w-32"
             />
           </div>
         </div>
@@ -277,18 +276,17 @@ export const MemberEditPanel: React.FC<MemberEditPanelProps> = ({
           <div className="space-y-1">
             <Label htmlFor="deathDate" className="text-sm">Death Date</Label>
             <div className="relative">
-              <CalendarIcon className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 id="deathDate"
                 type="date"
                 value={member.deathDate || ''}
                 onChange={(e) => onUpdateMember({ ...member, deathDate: e.target.value })}
-                className="pl-8 text-sm"
+                className="text-xs w-32"
               />
             </div>
           </div>
         )}
-
+      </div>
         {/* Delete Button */}
         <Button
           variant="destructive"
@@ -300,6 +298,6 @@ export const MemberEditPanel: React.FC<MemberEditPanelProps> = ({
         </Button>
       </CardContent>
     </Card>
-
   )
 }
+export default MemberEditPanel
