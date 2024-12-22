@@ -1,5 +1,7 @@
 import { db } from "@/lib/mongodb";
 import Tree from "@/models/Trees";
+import User from "@/models/User";
+import { auth } from "@clerk/nextjs/server";
 import { NextRequest } from "next/server";
 
 export async function PUT(
@@ -32,11 +34,15 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const userId = req.headers.get("user-id");
+    const {userId} =await auth();
+    console.log(userId);
+    await db.connect();
+    const User1 = await User.findOne({clerkId:userId});
+    console.log(User1);
     if (!userId) return new Response("Unauthorized", { status: 401 });
 
     await db.connect();
-    const tree = await Tree.findOneAndDelete({ _id: params.id, userId });
+    const tree = await Tree.findOneAndDelete({ _id: params.id, userId: User1._id });
 
     if (!tree) return new Response("Not Found", { status: 404 });
     return Response.json({ success: true });
@@ -52,10 +58,14 @@ export async function GET(
 ) {
   try {
     const userId = req.headers.get("user-id");
+    console.log("GET EDIT: "+userId);
+    
+    const User1 = await User.findOne({clerkId:userId});
+    await db.connect();
+
     if (!userId) return new Response("Unauthorized", { status: 401 });
 
-    await db.connect();
-    const tree = await Tree.findOne({ _id: params.id, userId });
+    const tree = await Tree.findOne({ _id: params.id, userId:User1._id });
 
     if (!tree) return new Response("Not Found", { status: 404 });
     return Response.json(tree);

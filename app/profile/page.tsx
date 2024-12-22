@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useUser } from "@clerk/nextjs";
+import { useUser,UserButton } from "@clerk/nextjs";
 import { Mail, User, Calendar, Clock, Shield } from "lucide-react";
 
 const ProfilePage = () => {
@@ -51,6 +51,7 @@ const ProfilePage = () => {
       <Card className="w-[90%] max-w-7xl bg-card border-none shadow-lg">
         <CardHeader>
           <div className="space-y-4 mt-2 text-center">
+            <UserButton/>
             <h1 className="text-3xl font-bold tracking-tight">
               {user.fullName}
             </h1>

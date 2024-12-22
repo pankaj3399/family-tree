@@ -1,7 +1,7 @@
 "use client";
 import { useToast } from "@/hooks/use-toast";
-import { treeService } from "@/services/treeService";
-import { SignInButton, SignOutButton, useAuth } from "@clerk/nextjs";
+import { createTree } from "@/services/treeService";
+import { SignInButton, SignOutButton, useAuth ,SignedOut,UserButton,SignedIn} from "@clerk/nextjs";
 import {
   CirclePlus,
   HelpCircle,
@@ -53,6 +53,8 @@ import {
 } from "../ui/sheet";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { DesktopToggleTheme, MobileToggleTheme } from "./toogle-theme";
+import { auth } from "@clerk/nextjs/server";
+import {dark} from "@clerk/themes"
 
 interface RouteProps {
   href: string;
@@ -123,8 +125,13 @@ const ProfileDropdown = () => {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon">
           <div className="flex gap-2">
-            <User className="h-5 w-5" />
-            <span className="block lg:hidden">Profile</span>
+            <UserButton  />
+            <span className="block lg:hidden"><SignedOut>
+            <SignInButton />
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn></span>
           </div>
         </Button>
       </DropdownMenuTrigger>
@@ -134,7 +141,7 @@ const ProfileDropdown = () => {
       >
         <DropdownMenuItem asChild>
           <Link href="/profile" className="flex items-center">
-            <User className="h-5 w-5 mr-2" />
+            <UserButton  />
             Profile
           </Link>
         </DropdownMenuItem>
@@ -152,7 +159,8 @@ const ProfileDropdown = () => {
   );
 };
 
-export const Navbar = () => {
+export  function Navbar  ()  {
+  // const { userId } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const { isSignedIn, isLoaded } = useAuth();
 
@@ -164,6 +172,7 @@ export const Navbar = () => {
   const router = useRouter();
 
   const handleTreeCreate = async () => {
+    
     if (!treeName.trim()) {
       toast({
         title: "Error",
@@ -175,7 +184,33 @@ export const Navbar = () => {
 
     try {
       setTreeCreating(true);
-      const newTree = await treeService.createTree(treeName);
+      const response = await fetch('/api/trees', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          name: treeName.trim(),
+          members:[
+            {
+                  id: 1,
+                  firstName: "John",
+                  lastName: "Doe",
+                  gender: "male",
+                  alive: true,
+                  birthDate: "1980-01-01",
+                  profileImage: "",
+                }
+          ]
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create tree');
+      }
+
+      const newTree = await response.json();
+
       toast({
         title: "Success",
         description: "Tree created successfully",
@@ -183,8 +218,10 @@ export const Navbar = () => {
       setCreateTreeDialogOpen(false);
       setTreeName("");
 
-      router.push(`/family-tree/${newTree._id}/edit`);
+      router.push(`/dashboard`);
     } catch (error) {
+      console.error(error);
+      
       toast({
         title: "Error",
         description: "Failed to create tree",
@@ -298,6 +335,7 @@ export const Navbar = () => {
                 </DialogHeader>
                 <form
                   onSubmit={(e) => {
+                    
                     e.preventDefault();
                     handleTreeCreate();
                   }}
@@ -515,3 +553,33 @@ export const Navbar = () => {
 };
 
 export default Navbar;
+
+// import Link from "next/link";
+// import React from "react";
+// export default function Navbar() {
+
+//   return(
+//     <div className="flex justify-between items-center p-4 bg-gray-800 text-white">
+//    <ul className="flex justify-between py-4 px-6">
+//     <div>
+//       <Link
+//       href="/"
+//       >
+//         <li>Home</li>
+//       </Link>
+//     </div>
+//     <div className="flex items-center">
+//       <Link href='/client'>
+//       <li>Client Page</li>
+//       </Link>
+//     </div>
+//     <div className="flex gap-6 items-center">
+//       <>
+//       <Link href='/sign-in'></Link>
+//       </>
+//     </div>
+//    </ul>
+//     </div>
+//   )
+
+// }

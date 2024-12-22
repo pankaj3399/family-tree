@@ -36,8 +36,9 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { treeService, FamilyTree } from "@/services/treeService";
+import { generateExportFile, exportTree, FamilyTree } from "@/services/treeService";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@clerk/nextjs";
 
 interface UserPlan {
   type: string;
@@ -48,6 +49,7 @@ interface UserPlan {
 
 const Dashboard = () => {
   const router = useRouter();
+  const { userId } = useAuth();
   const { toast } = useToast();
   const [familyTrees, setFamilyTrees] = useState<FamilyTree[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -56,6 +58,7 @@ const Dashboard = () => {
   const [createTreeDialogOpen, setCreateTreeDialogOpen] = useState(false);
   const [treeName, setTreeName] = useState("");
   const [treeCreating, setTreeCreating] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const userPlan: UserPlan = {
     type: "Basic",
@@ -64,31 +67,24 @@ const Dashboard = () => {
     price: "€29.99",
   };
 
-  const optimisticUpdate = async <T,>(
-    action: () => Promise<T>,
-    rollback: () => void,
-    successMsg: string
-  ) => {
-    try {
-      await action();
-      toast({ title: "Success", description: successMsg });
-    } catch (error) {
-      rollback();
-      toast({
-        title: "Error",
-        description: "Operation failed. Changes reverted.",
-        variant: "destructive",
-      });
-    }
-  };
-
   useEffect(() => {
     fetchTrees();
   }, []);
 
   const fetchTrees = async () => {
     try {
-      const data = await treeService.fetchTrees();
+      const response = await fetch('/api/trees', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch trees');
+      }
+      
+      const data = await response.json();
       setFamilyTrees(data);
     } catch (error) {
       toast({
@@ -102,15 +98,42 @@ const Dashboard = () => {
   };
 
   const handleDelete = async (id: string) => {
+    if (!id || isDeleting) return;
+    
+    setIsDeleting(true);
     const prevTrees = [...familyTrees];
-    setFamilyTrees((trees) => trees.filter((tree) => tree._id !== id));
-    setShowDeleteDialog(false);
+    
+    try {
+      setFamilyTrees((trees) => trees.filter((tree) => tree._id !== id));
+      setShowDeleteDialog(false);
 
-    await optimisticUpdate(
-      async () => await treeService.deleteTree(id),
-      () => setFamilyTrees(prevTrees),
-      "Tree deleted successfully"
-    );
+      const response = await fetch(`/api/trees/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'user-id': userId || ''
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete tree");
+      }
+
+      toast({
+        title: "Success",
+        description: "Tree deleted successfully",
+      });
+    } catch (error) {
+      setFamilyTrees(prevTrees);
+      toast({
+        title: "Error",
+        description: "Failed to delete tree",
+        variant: "destructive",
+      });
+      console.error("Delete error:", error);
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const createNewTree = async () => {
@@ -133,42 +156,60 @@ const Dashboard = () => {
     }
 
     setTreeCreating(true);
-    const tempId = `temp-${Date.now()}`;
-    const tempTree: FamilyTree = {
-      _id: tempId,
-      name: treeName,
-      createdAt: new Date().toISOString().split("T")[0],
-      memberCount: 0,
-      lastModified: new Date().toISOString().split("T")[0],
-      template: "Modern",
-    };
 
-    const prevTrees = [...familyTrees];
-    setFamilyTrees((prev) => [...prev, tempTree]);
+    try {
+      const response = await fetch('/api/trees', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          name: treeName.trim(),
+          members: [
+            {
+              id: 1,
+              firstName: "Father",
+              lastName: "Doe",
+              gender: "male",
+              alive: true,
+              birthDate: "1980-01-01",
+              profileImage: "",
+            }
+          ]
+        })
+      });
 
-    await optimisticUpdate(
-      async () => {
-        const newTree = await treeService.createTree(treeName);
-        setFamilyTrees((prev) =>
-          prev.map((tree) => (tree._id === tempId ? newTree : tree))
-        );
-        setCreateTreeDialogOpen(false);
-        setTreeName("");
-        // router.push(`/family-tree/${newTree._id}/edit`);
-      },
-      () => setFamilyTrees(prevTrees),
-      "Tree created successfully"
-    );
-    setTreeCreating(false);
+      if (!response.ok) {
+        throw new Error('Failed to create tree');
+      }
+
+      const newTree = await response.json();
+      setFamilyTrees((prev) => [...prev, newTree]);
+      setCreateTreeDialogOpen(false);
+      setTreeName("");
+
+      toast({
+        title: "Success",
+        description: "Tree created successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to create tree",
+        variant: "destructive",
+      });
+    } finally {
+      setTreeCreating(false);
+    }
   };
 
   const handleExport = async (id: string) => {
     try {
       const tree = familyTrees.find((t) => t._id === id);
-      if (!tree) throw new Error();
+      if (!tree) throw new Error("Tree not found");
 
-      const treeData = await treeService.exportTree(id);
-      treeService.generateExportFile(treeData);
+      const treeData = await exportTree(id);
+      generateExportFile(treeData);
 
       toast({
         title: "Success",
@@ -380,11 +421,10 @@ const Dashboard = () => {
                       </Button>
                       <Button
                         variant="destructive"
-                        onClick={() =>
-                          selectedTree && handleDelete(selectedTree)
-                        }
+                        onClick={() => selectedTree && handleDelete(selectedTree)}
+                        disabled={isDeleting}
                       >
-                        Delete
+                        {isDeleting ? <LoaderCircle className="animate-spin" /> : "Delete"}
                       </Button>
                     </div>
                   </DialogContent>
