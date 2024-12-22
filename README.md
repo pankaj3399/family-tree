@@ -34,6 +34,9 @@
    - Subscribe to the `user.created` event
    - Save your configuration
 5. Copy the signing secret provided for use in your .env file
+6. 
+![Screenshot (539)](https://github.com/user-attachments/assets/583d3b13-8adc-4041-a8f7-05fbaf6983ab)
+
 
 ### Cloudinary Configuration
 1. Log in to your Cloudinary account
@@ -44,6 +47,8 @@
 3. For Cloud Name:
    - Look in the side navigation of your Cloudinary dashboard
    - Copy your cloud name for your .env file
+   - ![WhatsApp Image 2024-12-22 at 21 48 15_1a234729](https://github.com/user-attachments/assets/566be4a1-e9ff-4005-a3f7-e3d2e189748a)
+
 
 ## Installation Steps
 1. Clone this repository:
