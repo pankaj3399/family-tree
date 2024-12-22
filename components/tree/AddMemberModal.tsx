@@ -18,8 +18,8 @@ interface AddMemberModalProps {
 const relationships = [
   { label: 'Husband', value: 'husband', genders: ['male'] },
   { label: 'Wife', value: 'wife', genders: ['female'] },
-  { label: 'Father', value: 'father', genders: ['male'] },
-  { label: 'Mother', value: 'mother', genders: ['female'] }
+  // { label: 'Father', value: 'father', genders: ['male'] },
+  // { label: 'Mother', value: 'mother', genders: ['female'] }
 ]
 
 export const AddMemberModal: React.FC<AddMemberModalProps> = ({ 
