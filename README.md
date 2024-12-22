@@ -47,7 +47,9 @@
 3. For Cloud Name:
    - Look in the side navigation of your Cloudinary dashboard
    - Copy your cloud name for your .env file
-![WhatsApp Image 2024-12-22 at 21 36 22_019aa778](https://github.com/user-attachments/assets/ed782a9f-4147-433e-8a7f-a17f25490871)
+   - ![WhatsApp Image 2024-12-22 at 21 48 15_1a234729](https://github.com/user-attachments/assets/566be4a1-e9ff-4005-a3f7-e3d2e189748a)
+
+
 ## Installation Steps
 1. Clone this repository:
 ```bash
