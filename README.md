@@ -34,7 +34,8 @@
    - Subscribe to the `user.created` event
    - Save your configuration
 5. Copy the signing secret provided for use in your .env file
-6. ![WhatsApp Image 2024-12-22 at 21 36 44_35ad57b2](https://github.com/user-attachments/assets/c7b1ff56-5f59-4426-92bb-2f6cff39cbcb)
+6. 
+![Screenshot (539)](https://github.com/user-attachments/assets/583d3b13-8adc-4041-a8f7-05fbaf6983ab)
 
 
 ### Cloudinary Configuration
