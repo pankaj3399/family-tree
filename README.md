@@ -31,6 +31,7 @@
 4. Find "Username" under "Identity Requirements"
 5. Enable and configure the username property as required
 6. Save your changes
+![WhatsApp Image 2024-12-22 at 23 32 55_7d21ce4f](https://github.com/user-attachments/assets/064a4e01-df18-4d73-b533-e262f28b981d)
 
 ### Clerk Webhook Configuration
 1. Log in to your Clerk Dashboard
