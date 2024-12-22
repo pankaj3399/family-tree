@@ -23,7 +23,14 @@
 - [x] User Friendly Navigation
 - [x] Dark Mode
 
-## Configuration Steps
+### Clerk Configuration
+
+1. Log in to your Clerk Dashboard
+2. Navigate to the Configure section
+3. Go to the "User & Authentication" section
+4. Find "Username" under "Identity Requirements"
+5. Enable and configure the username property as required
+6. Save your changes
 
 ### Clerk Webhook Configuration
 1. Log in to your Clerk Dashboard
